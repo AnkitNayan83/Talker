@@ -1,4 +1,4 @@
-# Talker
+# Talker (under development)
 
 ## About talker
 This application is a social platform that allows users to engage with each other through posts and comments. Users can create accounts, share posts, and comment on both posts and other comments. The platform supports threaded or nested comments, allowing for discussions to unfold in a structured manner. Users can also follow and be followed by others, receive notifications, and like posts and comments. The application aims to create a dynamic and interactive community where users can connect, share ideas, and stay informed about updates through notifications. Additionally, the system includes features like user authentication, hashed password storage, and the ability to generate and validate one-time passwords (OTP) for added security. The technology stack includes Prisma for database interactions, PostgreSQL as the database provider, and a Prisma Client to facilitate seamless communication with the database.
