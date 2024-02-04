@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @unique @default(uuid())
+  email           String    @unique
+  firstName       String    @db.VarChar(50)
+  lastName        String?   @db.VarChar(50)
+  userName        String    @unique
+  profileImage    String?
+  coverImage      String?
+  bio             String?
+  emailVerified   DateTime?
+  hashedPassword  String?
+  hasNotification Boolean   @default(false)
+  isMember        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  followedBy   UserFollows[] @relation("followedBy")
+  following    UserFollows[] @relation("following")
+  likedPost    PostLike[]    @relation("UserLikes")
+  likedComment CommentLike[] @relation("UserLikes")
+
+  notifications    Notification[] @relation("RecievedUser")
+  refNotifications Notification[] @relation("ReferencedUser")
+
+  posts    Post[]
+  comments Comment[]
+  otp      OTP[]
+}
+
+model UserFollows {
+  followedById String
+  followedBy   User   @relation("followedBy", references: [id], fields: [followedById])
+  followingId  String
+  following    User   @relation("following", references: [id], fields: [followingId])
+
+  @@id([followedById, followingId])
+}
+
+model Post {
+  id               String         @unique @default(uuid())
+  body             String
+  likes            PostLike[]     @relation("LikedPost")
+  userId           String
+  user             User           @relation(references: [id], fields: [userId], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  comments         Comment[]
+  refNotifications Notification[]
+}
+
+model PostLike {
+  postId String
+  post   Post   @relation("LikedPost", fields: [postId], references: [id])
+  userId String
+  user   User   @relation("UserLikes", fields: [userId], references: [id])
+
+  @@id([postId, userId])
+}
+
+model Comment {
+  id     String        @unique @default(uuid())
+  body   String
+  userId String
+  user   User          @relation(references: [id], fields: [userId], onDelete: Cascade)
+  postId String?
+  post   Post?         @relation(references: [id], fields: [postId])
+  likes  CommentLike[] @relation("CommentLike")
+
+  parentCommentId String?
+  parentComment   Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+
+  commentReplies Comment[] @relation("CommentReplies")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommentLike {
+  commentId String
+  comment   Comment @relation("CommentLike", fields: [commentId], references: [id])
+
+  userId String
+  user   User   @relation("UserLikes", fields: [userId], references: [id])
+
+  @@id([commentId, userId])
+}
+
+enum NotificationType {
+  USER
+  POST
+  SYSTEM
+}
+
+model Notification {
+  id      String           @unique @default(uuid())
+  message String
+  type    NotificationType
+
+  userId String
+  user   User   @relation("RecievedUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  refUserId String?
+  refUser   User?   @relation("ReferencedUser", fields: [refUserId], references: [id], onDelete: Cascade)
+
+  refPostId String?
+  refPost   Post?   @relation(references: [id], fields: [refPostId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OTP {
+  id             String   @unique @default(uuid())
+  userId         String
+  user           User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  value          String   @unique
+  isValid        Boolean  @default(true)
+  expirationDate DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
