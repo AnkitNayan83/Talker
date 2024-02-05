@@ -7,10 +7,13 @@ import notificationRoutes from "./routes/notificationRoutes";
 import morgan from "morgan";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import dotenv from "dotenv";
+import helmet from "helmet";
 
 dotenv.config();
 
 const app = express();
+
+app.use(helmet());
 app.use(express.json());
 app.use(morgan("dev"));
 

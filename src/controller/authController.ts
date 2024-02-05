@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendMail } from "../utils/sendEmail";
 import { generateOTP } from "../utils/generateOpt";
 import db from "../utils/db";
 import dotenv from "dotenv";
+import { validationResult } from "express-validator";
 
 dotenv.config();
 
@@ -13,6 +13,9 @@ const EMAIL_TOKEN_EXPIRATION_MINUTES = 10;
 
 export const Register = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) return next({ message: "email is not valid", status: 400 });
+
         const { email, firstName, lastName, password } = req.body;
 
         if (!email) return next({ message: "email is required", status: 400 });
@@ -101,6 +104,9 @@ const isUsernameUnique = async (userName: string) => {
 
 export const Login = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) return next({ message: "email is not valid", status: 400 });
+
         const { email, password } = req.body;
         if (!password) return next({ message: "password is required", status: 400 });
         if (!email) return next({ message: "email is required", status: 400 });
