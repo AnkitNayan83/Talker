@@ -19,11 +19,22 @@ export const getNotifications = async (req: AuthRequest, res: Response, next: Ne
             orderBy: {
                 createdAt: "desc",
             },
+            include: {
+                refComment: true,
+                refUser: true,
+                refPost: true,
+            },
             take: pageSize,
             skip: skipPage,
         });
 
-        if (user.hasNotification) {
+        const currentUser = await db.user.findFirst({
+            where: {
+                id: userId,
+            },
+        });
+
+        if (currentUser?.hasNotification) {
             await db.user.update({
                 where: {
                     id: userId,

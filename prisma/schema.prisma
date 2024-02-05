@@ -80,8 +80,9 @@ model Comment {
 
   commentReplies Comment[] @relation("CommentReplies")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  notifications Notification[]
 }
 
 model CommentLike {
@@ -97,6 +98,7 @@ model CommentLike {
 enum NotificationType {
   USER
   POST
+  COMMENT
   SYSTEM
 }
 
@@ -106,13 +108,16 @@ model Notification {
   type    NotificationType
 
   userId String
-  user   User   @relation("RecievedUser", fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation("RecievedUser", fields: [userId], references: [id])
 
   refUserId String?
-  refUser   User?   @relation("ReferencedUser", fields: [refUserId], references: [id], onDelete: Cascade)
+  refUser   User?   @relation("ReferencedUser", fields: [refUserId], references: [id])
 
   refPostId String?
-  refPost   Post?   @relation(references: [id], fields: [refPostId], onDelete: Cascade)
+  refPost   Post?   @relation(references: [id], fields: [refPostId])
+
+  refCommentId String?
+  refComment   Comment? @relation(references: [id], fields: [refCommentId])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -3,6 +3,38 @@ import { AuthRequest } from "../utils/type";
 import db from "../utils/db";
 import { NotificationType } from "@prisma/client";
 
+export const getComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user;
+        if (!user) return next({ message: "unauthorized", status: 401 });
+
+        const commentId = req.params.id;
+
+        const comment = await db.comment.findFirst({
+            where: {
+                id: commentId,
+            },
+            include: {
+                user: true,
+                commentReplies: {
+                    include: {
+                        user: true,
+                    },
+                },
+                likes: {
+                    include: {
+                        user: true,
+                    },
+                },
+            },
+        });
+
+        res.status(200).json({ success: true, comment });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const commentOnPost = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const user = req.user;
@@ -32,7 +64,7 @@ export const commentOnPost = async (req: AuthRequest, res: Response, next: NextF
             data: {
                 userId: checkPost.userId,
                 message: "commented on post",
-                type: NotificationType.POST,
+                type: NotificationType.COMMENT,
                 refPostId: postId,
                 refUserId: user.id,
             },
@@ -87,6 +119,16 @@ export const replyOnComment = async (req: AuthRequest, res: Response, next: Next
             },
         });
 
+        await db.notification.create({
+            data: {
+                userId: checkComment.userId,
+                message: "replied to your comment",
+                type: NotificationType.COMMENT,
+                refUserId: user.id,
+                refCommentId: commentId,
+            },
+        });
+
         res.status(201).json({
             success: true,
             reply,
@@ -96,10 +138,80 @@ export const replyOnComment = async (req: AuthRequest, res: Response, next: Next
     }
 };
 
-export const likeComment = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const likeComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const user = req.user;
         if (!user) return next({ message: "unauthorized", status: 401 });
+
+        const commentId = req.params.id;
+
+        const checkComment = await db.comment.findFirst({
+            where: {
+                id: commentId,
+            },
+        });
+
+        if (!checkComment) return next({ message: "comment does not exists", status: 404 });
+
+        const checkLike = await db.commentLike.findFirst({
+            where: {
+                commentId,
+                userId: user.id,
+            },
+        });
+
+        if (checkLike) return next({ message: "User already liked this comment", status: 400 });
+
+        await db.commentLike.create({
+            data: {
+                commentId,
+                userId: user.id,
+            },
+        });
+
+        await db.notification.create({
+            data: {
+                userId: checkComment.userId,
+                message: "liked your comment",
+                type: NotificationType.COMMENT,
+                refUserId: user.id,
+                refCommentId: commentId,
+            },
+        });
+
+        res.status(200).json({
+            message: "user liked this comment",
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user;
+        if (!user) return next({ message: "unauthorized", status: 401 });
+
+        const commentId = req.params.id;
+        const userId = user.id;
+
+        const checkComment = await db.comment.findFirst({
+            where: {
+                id: commentId,
+                userId,
+            },
+        });
+
+        if (!checkComment) return next({ message: "comment does not exists", status: 404 });
+
+        await db.comment.delete({
+            where: {
+                id: commentId,
+                userId,
+            },
+        });
+
+        res.status(200).json({ success: true, message: "comment deleted successfully" });
     } catch (error) {
         next(error);
     }

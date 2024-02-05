@@ -5,6 +5,13 @@ import { NotificationType } from "@prisma/client";
 
 export const getFeedPost = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
+        const user = req.user;
+        if (!user)
+            return next({
+                message: "unauthorized",
+                status: 401,
+            });
+
         const pageSize = 10;
         const pageNumber = parseInt(req.query.page as string) || 1;
         const skipPage = (pageNumber - 1) * pageSize;
@@ -16,6 +23,7 @@ export const getFeedPost = async (req: AuthRequest, res: Response, next: NextFun
                 createdAt: "desc",
             },
         });
+        res.status(200).json({ success: true, posts });
     } catch (error) {
         next(error);
     }
@@ -32,6 +40,11 @@ export const getPost = async (req: AuthRequest, res: Response, next: NextFunctio
                 comments: {
                     include: {
                         user: true,
+                        commentReplies: {
+                            include: {
+                                user: true,
+                            },
+                        },
                     },
                 },
                 user: true,
@@ -102,7 +115,6 @@ export const updatePost = async (req: AuthRequest, res: Response, next: NextFunc
         const { body } = req.body;
 
         if (!user) return next({ message: "unauthorized", staatus: 401 });
-        console.log(user);
         if (user.isVerified === undefined)
             return next({ message: "user not verified", status: 401 });
 

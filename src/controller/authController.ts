@@ -212,7 +212,7 @@ export const VerifyOTP = async (req: Request, res: Response, next: NextFunction)
             {
                 userId: user.id,
                 isMember: user.isMember,
-                isVerified: user.emailVerified,
+                isVerified: verifiedUser.emailVerified,
                 hasNotification: user.hasNotification,
             },
             process.env.JWT_SECRET!,
