@@ -15,7 +15,7 @@ export const sendMail = (userMail: string, body: string) => {
     });
 
     const mailOptions = {
-        from: "Twitter_Backend <noreply@nextgendev.com>",
+        from: "Talker_Backend <noreply@nextgendev.com>",
         replyTo: "noreply@nextgendev.com",
         to: userMail,
         subject: "Your one time password",
