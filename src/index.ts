@@ -8,11 +8,17 @@ import morgan from "morgan";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import dotenv from "dotenv";
 import helmet from "helmet";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 
+app.use(
+    cors({
+        origin: "*",
+    })
+);
 app.use(helmet());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -28,7 +34,7 @@ app.get("*", (req, res, next) => {
 });
 
 app.use(errorMiddleware);
-
-app.listen(process.env.PORT || 3000, () => {
-    console.log("Server started on port 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
 });

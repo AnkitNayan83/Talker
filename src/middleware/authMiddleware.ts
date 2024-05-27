@@ -34,6 +34,6 @@ export async function userAuth(req: AuthRequest, res: Response, next: NextFuncti
         };
         next();
     } catch (error) {
-        next(error);
+        next({ message: "TOKEN EXPIRED", status: 401 });
     }
 }

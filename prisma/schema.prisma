@@ -33,7 +33,6 @@ model User {
 
   posts    Post[]
   comments Comment[]
-  otp      OTP[]
 }
 
 model UserFollows {
@@ -125,11 +124,20 @@ model Notification {
 
 model OTP {
   id             String   @unique @default(uuid())
-  userId         String
-  user           User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  email          String
   value          String   @unique
-  isValid        Boolean  @default(true)
   expirationDate DateTime
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@unique([email, value])
+}
+
+model VerificationToken {
+  id      String   @id() @default(uuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
 }
