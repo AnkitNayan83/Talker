@@ -140,13 +140,13 @@ export const VerifyEmail = async (req: Request, res: Response, next: NextFunctio
         });
 
         if (!existingToken) {
-            return next({ message: "Invalid token", status: 401 });
+            return next({ message: "Invalid email token", status: 401 });
         }
 
         const isExpired = new Date(existingToken.expires) < new Date();
 
         if (isExpired) {
-            return next({ message: "Token expired", status: 401 });
+            return next({ message: "Email Token expired", status: 401 });
         }
 
         const existingUser = await db.user.findFirst({
