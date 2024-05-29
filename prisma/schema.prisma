@@ -47,6 +47,7 @@ model UserFollows {
 model Post {
   id               String         @unique @default(uuid())
   body             String
+  image            String?
   likes            PostLike[]     @relation("LikedPost")
   userId           String
   user             User           @relation(references: [id], fields: [userId], onDelete: Cascade)
