@@ -56,7 +56,7 @@ export const Register = async (req: Request, res: Response, next: NextFunction) 
 
         const body = `<div><a href="http://localhost:3000/verify-email?token=${verificationToken.token}">Click here</a> to verify your email</div>`;
 
-        sendMail(verificationToken.email, body);
+        await sendMail(verificationToken.email, body);
 
         res.status(201).json({
             message: "Verification link sent to your emil.",
@@ -94,7 +94,7 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
 
             const body = `<div><a href="http://localhost:3000/verify-email?token=${verificationToken.token}">Click here</a> to verify your email</div>`;
 
-            sendMail(verificationToken.email, body);
+            await sendMail(verificationToken.email, body);
 
             res.status(200).json({
                 success: false,

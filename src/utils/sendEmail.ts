@@ -1,33 +1,24 @@
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import sgMail from "@sendgrid/mail";
 
 dotenv.config();
 const EMAIL = process.env.EMAIL!;
-const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD!;
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY!;
 
-export const sendMail = (userMail: string, body: string) => {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-            user: EMAIL,
-            pass: EMAIL_PASSWORD,
-        },
-    });
+sgMail.setApiKey(SENDGRID_API_KEY);
 
+export const sendMail = async (userMail: string, body: string) => {
     const mailOptions = {
-        from: "Talker_Backend <noreply@nextgendev.com>",
+        from: `Talker_Backend <${EMAIL}>`,
         replyTo: "noreply@nextgendev.com",
         to: userMail,
-        subject: "Your one time password",
+        subject: "Verify your email",
         html: body,
     };
-
-    transporter.sendMail(mailOptions, (err, res) => {
-        if (err) {
-            console.log(err);
-            throw new Error("Something went wrong");
-        } else {
-            console.log(res.response);
-        }
-    });
+    try {
+        await sgMail.send(mailOptions);
+    } catch (error) {
+        console.log(error);
+        throw new Error("Failed to send mail");
+    }
 };
