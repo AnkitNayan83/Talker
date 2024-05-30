@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id              String    @unique @default(uuid())
+  id              String    @id @default(uuid())
   email           String    @unique
   firstName       String    @db.VarChar(50)
   lastName        String?   @db.VarChar(50)
@@ -45,7 +45,7 @@ model UserFollows {
 }
 
 model Post {
-  id               String         @unique @default(uuid())
+  id               String         @id @default(uuid())
   body             String
   image            String?
   likes            PostLike[]     @relation("LikedPost")
@@ -67,7 +67,7 @@ model PostLike {
 }
 
 model Comment {
-  id     String        @unique @default(uuid())
+  id     String        @id @default(uuid())
   body   String
   userId String
   user   User          @relation(references: [id], fields: [userId], onDelete: Cascade)
@@ -103,7 +103,7 @@ enum NotificationType {
 }
 
 model Notification {
-  id      String           @unique @default(uuid())
+  id      String           @id @default(uuid())
   message String
   type    NotificationType
 
@@ -124,7 +124,7 @@ model Notification {
 }
 
 model OTP {
-  id             String   @unique @default(uuid())
+  id             String   @id @default(uuid())
   email          String
   value          String   @unique
   expirationDate DateTime
@@ -135,7 +135,7 @@ model OTP {
 }
 
 model VerificationToken {
-  id      String   @id() @default(uuid())
+  id      String   @id @default(uuid())
   email   String
   token   String   @unique
   expires DateTime
