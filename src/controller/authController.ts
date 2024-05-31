@@ -53,7 +53,7 @@ export const Register = async (req: Request, res: Response, next: NextFunction) 
         });
 
         const verificationToken = await generateVerificationToken(email);
-
+        //? FIX THIS IN PRODUCTION
         const body = `<div><a href="http://localhost:3000/verify-email?token=${verificationToken.token}">Click here</a> to verify your email</div>`;
 
         await sendMail(verificationToken.email, body);
@@ -91,7 +91,7 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
 
         if (!user.emailVerified) {
             const verificationToken = await generateVerificationToken(email);
-
+            //? FIX THIS IN PRODUCTION
             const body = `<div><a href="http://localhost:3000/verify-email?token=${verificationToken.token}">Click here</a> to verify your email</div>`;
 
             await sendMail(verificationToken.email, body);
