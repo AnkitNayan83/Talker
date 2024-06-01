@@ -84,12 +84,13 @@ export const createPost = async (req: AuthRequest, res: Response, next: NextFunc
             return next({ message: "user not verified", status: 401 });
 
         const userId = user.id;
-        const { body } = req.body;
+        const { body, image } = req.body;
         if (!body) return next({ message: "tweet cannot be empty", status: 400 });
         const newPost = await db.post.create({
             data: {
                 userId,
                 body,
+                image,
             },
         });
 
