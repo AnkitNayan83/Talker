@@ -15,6 +15,24 @@ export const getFeedPost = async (req: AuthRequest, res: Response, next: NextFun
             orderBy: {
                 createdAt: "desc",
             },
+            include: {
+                user: true,
+                comments: {
+                    include: {
+                        user: true,
+                        commentReplies: {
+                            include: {
+                                user: true,
+                            },
+                        },
+                    },
+                },
+                likes: {
+                    include: {
+                        user: true,
+                    },
+                },
+            },
         });
         res.status(200).json({ success: true, posts });
     } catch (error) {
