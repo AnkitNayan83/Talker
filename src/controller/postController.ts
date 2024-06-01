@@ -1,17 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { AuthRequest } from "../utils/type";
 import db from "../utils/db";
 import { NotificationType } from "@prisma/client";
 
 export const getFeedPost = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-        const user = req.user;
-        if (!user)
-            return next({
-                message: "unauthorized",
-                status: 401,
-            });
-
         const pageSize = 10;
         const pageNumber = parseInt(req.query.page as string) || 1;
         const skipPage = (pageNumber - 1) * pageSize;

@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-router.get("/feed", userAuth, getFeedPost);
+router.get("/feed", getFeedPost);
 router.get("/:id", userAuth, getPost);
 
 router.post("/", userAuth, createPost);

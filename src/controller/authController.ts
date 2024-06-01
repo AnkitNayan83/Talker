@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { sendMail } from "../utils/sendEmail";
-import { generateOTP } from "../utils/generateOpt";
+import { AuthRequest } from "../utils/type";
 import db from "../utils/db";
 import dotenv from "dotenv";
 import { validationResult } from "express-validator";
@@ -177,5 +177,13 @@ export const VerifyEmail = async (req: Request, res: Response, next: NextFunctio
         return res.status(200).json({ message: "email verified successfully" });
     } catch (error) {
         next(error);
+    }
+};
+
+export const verifyJWTToken = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (req.user) {
+        return res.status(200).json({ message: "Token verified" });
+    } else {
+        return next({ message: "Token Expired", status: 401 });
     }
 };
