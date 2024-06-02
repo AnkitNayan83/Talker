@@ -11,8 +11,8 @@ import {
 
 const router = express.Router();
 
+router.get("/post/:id", getPostComments);
 router.get("/:id", getComment);
-router.get("/", getPostComments);
 
 router.post("/reply/:id", userAuth, replyOnComment);
 router.post("/like/:id", userAuth, likeComment);
