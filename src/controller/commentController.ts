@@ -20,12 +20,18 @@ export const getComment = async (req: AuthRequest, res: Response, next: NextFunc
                     include: {
                         user: true,
                     },
+                    orderBy: {
+                        createdAt: "desc",
+                    },
                 },
                 likes: {
                     include: {
                         user: true,
                     },
                 },
+            },
+            orderBy: {
+                createdAt: "desc",
             },
         });
 

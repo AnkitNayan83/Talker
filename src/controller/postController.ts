@@ -24,7 +24,13 @@ export const getFeedPost = async (req: AuthRequest, res: Response, next: NextFun
                             include: {
                                 user: true,
                             },
+                            orderBy: {
+                                createdAt: "desc",
+                            },
                         },
+                    },
+                    orderBy: {
+                        createdAt: "desc",
                     },
                 },
                 likes: {
@@ -55,7 +61,13 @@ export const getPost = async (req: AuthRequest, res: Response, next: NextFunctio
                             include: {
                                 user: true,
                             },
+                            orderBy: {
+                                createdAt: "desc",
+                            },
                         },
+                    },
+                    orderBy: {
+                        createdAt: "desc",
                     },
                 },
                 user: true,
