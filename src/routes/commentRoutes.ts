@@ -4,6 +4,7 @@ import {
     commentOnPost,
     deleteComment,
     getComment,
+    getPostComments,
     likeComment,
     replyOnComment,
 } from "../controller/commentController";
@@ -11,6 +12,7 @@ import {
 const router = express.Router();
 
 router.get("/:id", getComment);
+router.get("/", getPostComments);
 
 router.post("/reply/:id", userAuth, replyOnComment);
 router.post("/like/:id", userAuth, likeComment);

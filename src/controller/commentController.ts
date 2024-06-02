@@ -38,6 +38,51 @@ export const getComment = async (req: AuthRequest, res: Response, next: NextFunc
     }
 };
 
+export const getPostComments = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const postId = req.params.id;
+
+    if (!postId) return next({ message: "Post id not found", status: 400 });
+
+    try {
+        const post = await db.post.findUnique({
+            where: {
+                id: postId,
+            },
+            include: {
+                comments: {
+                    include: {
+                        user: true,
+                        commentReplies: {
+                            include: {
+                                user: true,
+                            },
+                            orderBy: {
+                                createdAt: "desc",
+                            },
+                        },
+                    },
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                },
+                user: true,
+                likes: {
+                    include: {
+                        user: true,
+                    },
+                },
+            },
+        });
+
+        if (!post) return next({ message: "Post does not exists" });
+
+        const comments = post.comments;
+        return res.status(200).json({ success: true, comments });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const commentOnPost = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const user = req.user;
