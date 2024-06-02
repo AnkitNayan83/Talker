@@ -10,7 +10,7 @@ import {
 
 const router = express.Router();
 
-router.get("/:id", userAuth, getComment);
+router.get("/:id", getComment);
 
 router.post("/reply/:id", userAuth, replyOnComment);
 router.post("/like/:id", userAuth, likeComment);

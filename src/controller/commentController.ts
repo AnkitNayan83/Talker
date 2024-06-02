@@ -5,9 +5,6 @@ import { NotificationType } from "@prisma/client";
 
 export const getComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-        const user = req.user;
-        if (!user) return next({ message: "unauthorized", status: 401 });
-
         const commentId = req.params.id;
 
         const comment = await db.comment.findFirst({
