@@ -235,6 +235,46 @@ export const likeComment = async (req: AuthRequest, res: Response, next: NextFun
     }
 };
 
+export const unlikeComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user;
+        if (!user) return next({ message: "unauthorized", status: 401 });
+
+        const commentId = req.params.id;
+
+        const checkComment = await db.comment.findFirst({
+            where: {
+                id: commentId,
+            },
+        });
+
+        if (!checkComment) return next({ message: "comment does not exists", status: 404 });
+
+        const checkLike = await db.commentLike.findFirst({
+            where: {
+                commentId,
+                userId: user.id,
+            },
+        });
+
+        if (!checkLike) return next({ message: "User did't liked this comment", status: 400 });
+
+        await db.commentLike.delete({
+            where: {
+                commentId_userId: {
+                    commentId,
+                    userId: user.id,
+                },
+            },
+        });
+        res.status(200).json({
+            message: "user unliked this comment",
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const deleteComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const user = req.user;
