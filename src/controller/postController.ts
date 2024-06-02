@@ -269,7 +269,7 @@ export const likePost = async (req: AuthRequest, res: Response, next: NextFuncti
     }
 };
 
-export const unlike = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const unlikePost = async (req: AuthRequest, res: Response, next: NextFunction) => {
     const user = req.user;
     if (!user) return next({ message: "unauthorized", status: 401 });
     const postId = req.params.id;

@@ -6,6 +6,7 @@ import {
     getFeedPost,
     getPost,
     likePost,
+    unlikePost,
     updatePost,
 } from "../controller/postController";
 
@@ -15,6 +16,7 @@ router.get("/feed", getFeedPost);
 router.get("/:id", userAuth, getPost);
 
 router.post("/", userAuth, createPost);
+router.post("/unlike/:id", userAuth, unlikePost);
 router.post("/:id", userAuth, likePost);
 
 router.put("/:id", userAuth, updatePost);
