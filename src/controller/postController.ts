@@ -268,3 +268,41 @@ export const likePost = async (req: AuthRequest, res: Response, next: NextFuncti
         next(error);
     }
 };
+
+export const unlike = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const user = req.user;
+    if (!user) return next({ message: "unauthorized", status: 401 });
+    const postId = req.params.id;
+    const userId = user.id;
+
+    try {
+        const checkPost = await db.post.findFirst({
+            where: {
+                id: postId,
+            },
+        });
+
+        if (!checkPost) return next({ message: "post not found", status: 404 });
+
+        const checkLike = await db.postLike.findFirst({
+            where: {
+                userId,
+                postId,
+            },
+        });
+
+        if (!checkLike) return next({ message: " You didn't liked this post", status: 400 });
+
+        await db.postLike.delete({
+            where: {
+                postId_userId: {
+                    postId,
+                    userId,
+                },
+            },
+        });
+        res.status(200).json({ message: "post unliked successfully" });
+    } catch (error) {
+        next(error);
+    }
+};
