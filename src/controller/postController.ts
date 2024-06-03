@@ -65,6 +65,11 @@ export const getPost = async (req: AuthRequest, res: Response, next: NextFunctio
                                 createdAt: "desc",
                             },
                         },
+                        likes: {
+                            include: {
+                                user: true,
+                            },
+                        },
                     },
                     orderBy: {
                         createdAt: "desc",

@@ -60,6 +60,11 @@ export const getPostComments = async (req: AuthRequest, res: Response, next: Nex
                                 createdAt: "desc",
                             },
                         },
+                        likes: {
+                            include: {
+                                user: true,
+                            },
+                        },
                     },
                     orderBy: {
                         createdAt: "desc",
