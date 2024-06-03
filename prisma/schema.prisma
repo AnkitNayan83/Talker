@@ -87,10 +87,10 @@ model Comment {
 
 model CommentLike {
   commentId String
-  comment   Comment @relation("CommentLike", fields: [commentId], references: [id])
+  comment   Comment @relation("CommentLike", fields: [commentId], references: [id], onDelete: Cascade)
 
   userId String
-  user   User   @relation("UserLikes", fields: [userId], references: [id])
+  user   User   @relation("UserLikes", fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([commentId, userId])
 }
