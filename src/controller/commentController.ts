@@ -16,6 +16,11 @@ export const getComment = async (req: AuthRequest, res: Response, next: NextFunc
                 commentReplies: {
                     include: {
                         user: true,
+                        likes: {
+                            include: {
+                                user: true,
+                            },
+                        },
                     },
                     orderBy: {
                         createdAt: "desc",
