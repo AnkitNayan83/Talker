@@ -26,7 +26,11 @@ export const getComment = async (req: AuthRequest, res: Response, next: NextFunc
                         user: true,
                     },
                 },
-                post: true,
+                post: {
+                    include: {
+                        user: true,
+                    },
+                },
                 parentComment: {
                     include: {
                         user: true,
