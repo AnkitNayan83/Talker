@@ -13,7 +13,7 @@ import {
 const router = express.Router();
 
 router.get("/feed", getFeedPost);
-router.get("/:id", userAuth, getPost);
+router.get("/:id", getPost);
 
 router.post("/", userAuth, createPost);
 router.post("/:id", userAuth, likePost);
