@@ -16,7 +16,8 @@ export const sendMail = async (userMail: string, body: string) => {
         html: body,
     };
     try {
-        await sgMail.send(mailOptions);
+        const res = await sgMail.send(mailOptions);
+        console.log(res);
     } catch (error) {
         console.log(error);
         throw new Error("Failed to send mail");
