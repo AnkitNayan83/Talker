@@ -9,7 +9,7 @@ sgMail.setApiKey(SENDGRID_API_KEY);
 
 export const sendMail = async (userMail: string, body: string) => {
     const mailOptions = {
-        from: `Talker_Backend <${EMAIL}>`,
+        from: `Talker <${EMAIL}>`,
         replyTo: "noreply@nextgendev.com",
         to: userMail,
         subject: "Verify your email",
